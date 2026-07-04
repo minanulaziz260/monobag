@@ -31,6 +31,20 @@
   .display{font-family:'Space Grotesk', sans-serif; font-weight:800; letter-spacing:-0.02em;}
   .tag-font{font-family:'Bebas Neue', sans-serif; letter-spacing:0.06em;}
 
+  /* ===== Scroll reveal ===== */
+  .card, .trust-item{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .card.in-view, .trust-item.in-view{
+    opacity:1;
+    transform:translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .card, .trust-item{ opacity:1; transform:none; transition:none; }
+  }
+
   /* ===== Pattern background — provided spec, unmodified ===== */
   .pattern-background {
     position: relative;
@@ -213,10 +227,18 @@
 
   /* ===== Filter bar ===== */
   .filter-bar{
-    padding:0 6vw;
+    padding:14px 6vw;
     margin-top:-30px;
     display:flex;
     justify-content:center;
+    position:sticky;
+    top:0;
+    z-index:40;
+    transition:background .2s ease, box-shadow .2s ease, padding .2s ease;
+  }
+  .filter-bar.stuck{
+    background:var(--cream);
+    box-shadow:0 12px 26px rgba(20,18,43,0.14);
   }
   .filter-controls{
     display:flex;
@@ -386,6 +408,24 @@
   .badge-flag.terlaris{ background:var(--coral); color:var(--ink); }
   .badge-flag.baru{ background:var(--indigo); color:var(--lav); }
 
+  .wishlist-btn{
+    position:absolute;
+    top:84px; right:12px;
+    width:34px; height:34px;
+    border-radius:50%;
+    background:var(--cream);
+    border:2px solid var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    font-size:15px;
+    line-height:1;
+    color:var(--ink);
+    transition:transform .15s ease, background .15s ease, color .15s ease;
+    z-index:2;
+  }
+  .wishlist-btn:hover{ transform:scale(1.1); }
+  .wishlist-btn.active{ background:var(--coral); border-color:var(--ink); }
+
   .card-body{
     padding:18px 18px 20px;
     display:flex;
@@ -445,8 +485,8 @@
   }
   .mp-shopee{ background:#FFEFE3; }
   .mp-shopee:hover{ background:var(--coral); color:var(--ink); transform:translateY(-2px); }
-  .mp-tokopedia{ background:#E7F0FF; }
-  .mp-tokopedia:hover{ background:var(--indigo); color:var(--lav); transform:translateY(-2px); }
+  .mp-tiktok{ background:#FFE3ED; }
+  .mp-tiktok:hover{ background:var(--ink); color:var(--lav); transform:translateY(-2px); }
 
   /* ===== Trust strip ===== */
   .trust{
@@ -517,6 +557,119 @@
     .search-wrap input, .sort-select, .filter-pills{ width:100%; }
     .filter-pills{ justify-content:center; }
   }
+
+  /* ===== Wishlist FAB, overlay, drawer ===== */
+  .wishlist-fab{
+    position:fixed;
+    bottom:24px; right:24px;
+    width:56px; height:56px;
+    border-radius:50%;
+    background:var(--ink);
+    color:var(--lav);
+    border:none;
+    font-size:22px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    box-shadow:0 12px 30px rgba(20,18,43,0.35);
+    z-index:70;
+    transition:transform .15s ease;
+  }
+  .wishlist-fab:hover{ transform:scale(1.08); }
+  .wishlist-fab .count{
+    position:absolute;
+    top:-4px; right:-4px;
+    background:var(--coral);
+    color:var(--ink);
+    font-size:11px;
+    font-weight:800;
+    width:22px; height:22px;
+    border-radius:50%;
+    display:none;
+    align-items:center; justify-content:center;
+    border:2px solid var(--cream);
+  }
+
+  .wishlist-overlay{
+    position:fixed; inset:0;
+    background:rgba(20,18,43,0.45);
+    z-index:65;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  .wishlist-overlay.open{ opacity:1; pointer-events:auto; }
+
+  .wishlist-drawer{
+    position:fixed;
+    top:0; right:-380px;
+    width:340px; max-width:88vw;
+    height:100%;
+    background:var(--cream);
+    border-left:2px solid var(--ink);
+    z-index:75;
+    padding:26px 22px;
+    overflow-y:auto;
+    transition:right .3s ease;
+    box-shadow:-14px 0 40px rgba(20,18,43,0.2);
+  }
+  .wishlist-drawer.open{ right:0; }
+  .drawer-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-bottom:16px;
+    border-bottom:2px solid var(--ink);
+    margin-bottom:18px;
+  }
+  .drawer-head h3{ font-size:20px; }
+  .drawer-close{
+    width:30px; height:30px;
+    border-radius:50%;
+    border:2px solid var(--ink);
+    background:var(--cream);
+    cursor:pointer;
+    font-size:13px;
+    font-weight:800;
+  }
+  .drawer-close:hover{ background:var(--ink); color:var(--lav); }
+  .wishlist-empty{
+    font-size:13px;
+    font-weight:600;
+    opacity:0.65;
+    line-height:1.6;
+    padding-top:10px;
+  }
+  .wishlist-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .wishlist-item strong{
+    display:block;
+    font-family:'Space Grotesk', sans-serif;
+    font-size:13.5px;
+  }
+  .wishlist-item span{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    opacity:0.65;
+    margin-top:3px;
+  }
+  .remove-wish{
+    width:26px; height:26px;
+    border-radius:50%;
+    border:2px solid var(--ink);
+    background:var(--cream);
+    cursor:pointer;
+    font-size:11px;
+    font-weight:800;
+    flex-shrink:0;
+  }
+  .remove-wish:hover{ background:var(--coral); }
 </style>
 </head>
 <body>
@@ -568,7 +721,8 @@
   </div>
 </header>
 
-<div class="filter-bar">
+<div id="filterSentinel"></div>
+<div class="filter-bar" id="filterBar">
   <div class="filter-controls">
     <div class="search-wrap">
       <input type="text" id="searchInput" placeholder="Cari nama tas...">
@@ -585,6 +739,7 @@
       <option value="price-desc">Harga Tertinggi</option>
       <option value="sold">Terlaris</option>
       <option value="rating">Rating Tertinggi</option>
+      <option value="clicks">Paling Sering Diklik</option>
     </select>
   </div>
 </div>
@@ -597,10 +752,11 @@
 
   <div class="grid" id="productGrid">
 
-    <div class="card" data-cat="wanita" data-name="mini sling quilted" data-price="89000" data-sold="214" data-rating="4.9">
+    <div class="card" data-cat="wanita" data-id="mini-sling-quilted" data-name="mini sling quilted" data-price="89000" data-sold="214" data-rating="4.9">
       <div class="card-media">
         <span class="cat-badge">Wanita</span>
         <span class="badge-flag baru">✦ Baru</span>
+        <button class="wishlist-btn" aria-label="Simpan ke wishlist">♡</button>
         <div class="price-sticker"><small>MULAI</small><b>89K</b></div>
         <svg viewBox="0 0 100 100" fill="none"><path d="M30 40 Q30 20 50 20 Q70 20 70 40" stroke="#14122B" stroke-width="4"/><rect x="22" y="38" width="56" height="42" rx="10" fill="#444CF7" stroke="#14122B" stroke-width="4"/><line x1="15" y1="15" x2="35" y2="45" stroke="#14122B" stroke-width="4"/></svg>
       </div>
@@ -610,14 +766,15 @@
         <div class="card-price">Rp 89.000 <s>Rp 145.000</s></div>
         <div class="marketplace-row">
           <a href="#" class="mp-btn mp-shopee">Shopee<b>Rp 89K</b></a>
-          <a href="#" class="mp-btn mp-tokopedia">Tokopedia<b>Rp 95K</b></a>
+          <a href="#" class="mp-btn mp-tiktok">TikTokShop<b>Rp 95K</b></a>
         </div>
       </div>
     </div>
 
-    <div class="card" data-cat="pria" data-name="kanvas tactical sling" data-price="115000" data-sold="389" data-rating="4.8">
+    <div class="card" data-cat="pria" data-id="kanvas-tactical-sling" data-name="kanvas tactical sling" data-price="115000" data-sold="389" data-rating="4.8">
       <div class="card-media">
         <span class="cat-badge">Pria</span>
+        <button class="wishlist-btn" aria-label="Simpan ke wishlist">♡</button>
         <div class="price-sticker"><small>MULAI</small><b>115K</b></div>
         <svg viewBox="0 0 100 100" fill="none"><rect x="20" y="35" width="60" height="45" rx="8" fill="#FF6A3D" stroke="#14122B" stroke-width="4"/><line x1="14" y1="14" x2="30" y2="40" stroke="#14122B" stroke-width="4"/><rect x="20" y="50" width="60" height="12" fill="#14122B"/></svg>
       </div>
@@ -627,15 +784,16 @@
         <div class="card-price">Rp 115.000 <s>Rp 189.000</s></div>
         <div class="marketplace-row">
           <a href="#" class="mp-btn mp-shopee">Shopee<b>Rp 118K</b></a>
-          <a href="#" class="mp-btn mp-tokopedia">Tokopedia<b>Rp 115K</b></a>
+          <a href="#" class="mp-btn mp-tiktok">TikTokShop<b>Rp 115K</b></a>
         </div>
       </div>
     </div>
 
-    <div class="card" data-cat="unisex" data-name="pouch sling basic" data-price="99000" data-sold="560" data-rating="4.3">
+    <div class="card" data-cat="unisex" data-id="pouch-sling-basic" data-name="pouch sling basic" data-price="99000" data-sold="560" data-rating="4.3">
       <div class="card-media">
         <span class="cat-badge">Unisex</span>
         <span class="badge-flag terlaris">★ Terlaris</span>
+        <button class="wishlist-btn" aria-label="Simpan ke wishlist">♡</button>
         <div class="price-sticker"><small>MULAI</small><b>99K</b></div>
         <svg viewBox="0 0 100 100" fill="none"><path d="M28 38 Q28 18 50 18 Q72 18 72 38" stroke="#14122B" stroke-width="4"/><rect x="20" y="36" width="60" height="46" rx="14" fill="#E5E5F7" stroke="#14122B" stroke-width="4"/><circle cx="50" cy="59" r="6" fill="#14122B"/></svg>
       </div>
@@ -645,14 +803,15 @@
         <div class="card-price">Rp 99.000 <s>Rp 129.000</s></div>
         <div class="marketplace-row">
           <a href="#" class="mp-btn mp-shopee">Shopee<b>Rp 99K</b></a>
-          <a href="#" class="mp-btn mp-tokopedia">Tokopedia<b>Rp 104K</b></a>
+          <a href="#" class="mp-btn mp-tiktok">TikTokShop<b>Rp 104K</b></a>
         </div>
       </div>
     </div>
 
-    <div class="card" data-cat="wanita" data-name="round sling corduroy" data-price="129000" data-sold="178" data-rating="4.9">
+    <div class="card" data-cat="wanita" data-id="round-sling-corduroy" data-name="round sling corduroy" data-price="129000" data-sold="178" data-rating="4.9">
       <div class="card-media">
         <span class="cat-badge">Wanita</span>
+        <button class="wishlist-btn" aria-label="Simpan ke wishlist">♡</button>
         <div class="price-sticker"><small>MULAI</small><b>129K</b></div>
         <svg viewBox="0 0 100 100" fill="none"><rect x="24" y="30" width="52" height="50" rx="16" fill="#444CF7" stroke="#14122B" stroke-width="4"/><line x1="18" y1="12" x2="34" y2="34" stroke="#14122B" stroke-width="4"/></svg>
       </div>
@@ -662,15 +821,16 @@
         <div class="card-price">Rp 129.000 <s>Rp 199.000</s></div>
         <div class="marketplace-row">
           <a href="#" class="mp-btn mp-shopee">Shopee<b>Rp 132K</b></a>
-          <a href="#" class="mp-btn mp-tokopedia">Tokopedia<b>Rp 129K</b></a>
+          <a href="#" class="mp-btn mp-tiktok">TikTokShop<b>Rp 129K</b></a>
         </div>
       </div>
     </div>
 
-    <div class="card" data-cat="pria" data-name="chest bag waterproof" data-price="149000" data-sold="742" data-rating="4.9">
+    <div class="card" data-cat="pria" data-id="chest-bag-waterproof" data-name="chest bag waterproof" data-price="149000" data-sold="742" data-rating="4.9">
       <div class="card-media">
         <span class="cat-badge">Pria</span>
         <span class="badge-flag terlaris">★ Terlaris</span>
+        <button class="wishlist-btn" aria-label="Simpan ke wishlist">♡</button>
         <div class="price-sticker"><small>MULAI</small><b>149K</b></div>
         <svg viewBox="0 0 100 100" fill="none"><rect x="18" y="32" width="64" height="48" rx="6" fill="#14122B"/><line x1="14" y1="10" x2="30" y2="36" stroke="#14122B" stroke-width="4"/><rect x="18" y="46" width="64" height="8" fill="#FF6A3D"/></svg>
       </div>
@@ -680,14 +840,15 @@
         <div class="card-price">Rp 149.000 <s>Rp 235.000</s></div>
         <div class="marketplace-row">
           <a href="#" class="mp-btn mp-shopee">Shopee<b>Rp 149K</b></a>
-          <a href="#" class="mp-btn mp-tokopedia">Tokopedia<b>Rp 155K</b></a>
+          <a href="#" class="mp-btn mp-tiktok">TikTokShop<b>Rp 155K</b></a>
         </div>
       </div>
     </div>
 
-    <div class="card" data-cat="unisex" data-name="nylon sling ringan" data-price="79000" data-sold="311" data-rating="4.4">
+    <div class="card" data-cat="unisex" data-id="nylon-sling-ringan" data-name="nylon sling ringan" data-price="79000" data-sold="311" data-rating="4.4">
       <div class="card-media">
         <span class="cat-badge">Unisex</span>
+        <button class="wishlist-btn" aria-label="Simpan ke wishlist">♡</button>
         <div class="price-sticker"><small>MULAI</small><b>79K</b></div>
         <svg viewBox="0 0 100 100" fill="none"><path d="M26 42 Q26 20 50 20 Q74 20 74 42" stroke="#14122B" stroke-width="4"/><rect x="20" y="40" width="60" height="40" rx="20" fill="#FF6A3D" stroke="#14122B" stroke-width="4"/></svg>
       </div>
@@ -697,7 +858,7 @@
         <div class="card-price">Rp 79.000 <s>Rp 110.000</s></div>
         <div class="marketplace-row">
           <a href="#" class="mp-btn mp-shopee">Shopee<b>Rp 79K</b></a>
-          <a href="#" class="mp-btn mp-tokopedia">Tokopedia<b>Rp 85K</b></a>
+          <a href="#" class="mp-btn mp-tiktok">TikTokShop<b>Rp 85K</b></a>
         </div>
       </div>
     </div>
@@ -752,6 +913,19 @@
   </div>
 </footer>
 
+<button class="wishlist-fab" id="wishlistFab" aria-label="Buka wishlist">
+  ♥
+  <span class="count" id="wishlistCount">0</span>
+</button>
+<div class="wishlist-overlay" id="wishlistOverlay"></div>
+<aside class="wishlist-drawer" id="wishlistDrawer">
+  <div class="drawer-head">
+    <h3 class="display">Tersimpan</h3>
+    <button class="drawer-close" id="wishlistClose" aria-label="Tutup wishlist">✕</button>
+  </div>
+  <div id="wishlistBody"></div>
+</aside>
+
 <script>
   const filterButtons = document.querySelectorAll('#filterPills button');
   const cards = Array.from(document.querySelectorAll('#productGrid .card'));
@@ -784,6 +958,9 @@
       visible.sort((a,b)=> Number(b.dataset.sold) - Number(a.dataset.sold));
     } else if(sortBy === 'rating'){
       visible.sort((a,b)=> Number(b.dataset.rating) - Number(a.dataset.rating));
+    } else if(sortBy === 'clicks'){
+      const clicks = getClicks();
+      visible.sort((a,b)=> (clicks[b.dataset.id] || 0) - (clicks[a.dataset.id] || 0));
     }
     visible.forEach(card => grid.appendChild(card));
   }
@@ -798,7 +975,144 @@
 
   searchInput.addEventListener('input', applyFilters);
   sortSelect.addEventListener('change', applyFilters);
+
+  // ===== Sticky filter bar shadow/background toggle =====
+  const filterBar = document.getElementById('filterBar');
+  const filterSentinel = document.getElementById('filterSentinel');
+  if('IntersectionObserver' in window){
+    const stickyObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        filterBar.classList.toggle('stuck', !entry.isIntersecting);
+      });
+    }, { threshold: 0 });
+    stickyObserver.observe(filterSentinel);
+  }
+
+  // ===== Click tracking (per product, drives "Paling Sering Diklik" sort) =====
+  const CLICKS_KEY = 'monobag_clicks';
+  function getClicks(){
+    try{ return JSON.parse(localStorage.getItem(CLICKS_KEY)) || {}; }
+    catch(e){ return {}; }
+  }
+  function trackClick(id){
+    const clicks = getClicks();
+    clicks[id] = (clicks[id] || 0) + 1;
+    localStorage.setItem(CLICKS_KEY, JSON.stringify(clicks));
+  }
+  document.querySelectorAll('.mp-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const card = btn.closest('.card');
+      if(card && card.dataset.id) trackClick(card.dataset.id);
+    });
+  });
+
+  // ===== Scroll reveal =====
+  const revealTargets = document.querySelectorAll('.card, .trust-item');
+  if('IntersectionObserver' in window){
+    const revealObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    revealTargets.forEach(el => revealObserver.observe(el));
+  } else {
+    revealTargets.forEach(el => el.classList.add('in-view'));
+  }
+
+  // ===== Wishlist =====
+  const WISHLIST_KEY = 'monobag_wishlist';
+  const wishlistFab = document.getElementById('wishlistFab');
+  const wishlistCount = document.getElementById('wishlistCount');
+  const wishlistOverlay = document.getElementById('wishlistOverlay');
+  const wishlistDrawer = document.getElementById('wishlistDrawer');
+  const wishlistClose = document.getElementById('wishlistClose');
+  const wishlistBody = document.getElementById('wishlistBody');
+
+  function getWishlist(){
+    try{ return JSON.parse(localStorage.getItem(WISHLIST_KEY)) || []; }
+    catch(e){ return []; }
+  }
+  function saveWishlist(list){
+    localStorage.setItem(WISHLIST_KEY, JSON.stringify(list));
+  }
+  function formatRupiah(n){
+    return 'Rp ' + Number(n).toLocaleString('id-ID');
+  }
+
+  function renderWishlist(){
+    const list = getWishlist();
+    wishlistCount.textContent = list.length;
+    wishlistCount.style.display = list.length ? 'flex' : 'none';
+
+    if(list.length === 0){
+      wishlistBody.innerHTML = '<p class="wishlist-empty">Belum ada tas yang disimpan. Klik ikon hati di produk favoritmu untuk menyimpannya di sini.</p>';
+      return;
+    }
+
+    wishlistBody.innerHTML = '';
+    list.forEach(id=>{
+      const card = document.querySelector('.card[data-id="' + id + '"]');
+      if(!card) return;
+      const name = card.querySelector('h3').textContent;
+      const price = formatRupiah(card.dataset.price);
+      const item = document.createElement('div');
+      item.className = 'wishlist-item';
+      item.innerHTML = '<div><strong>' + name + '</strong><span>' + price + '</span></div><button class="remove-wish" data-id="' + id + '" aria-label="Hapus dari wishlist">✕</button>';
+      wishlistBody.appendChild(item);
+    });
+  }
+
+  function toggleWishlistItem(id, btn){
+    let list = getWishlist();
+    if(list.includes(id)){
+      list = list.filter(x => x !== id);
+      if(btn){ btn.classList.remove('active'); btn.textContent = '♡'; }
+    } else {
+      list.push(id);
+      if(btn){ btn.classList.add('active'); btn.textContent = '♥'; }
+    }
+    saveWishlist(list);
+    renderWishlist();
+  }
+
+  document.querySelectorAll('.wishlist-btn').forEach(btn=>{
+    const card = btn.closest('.card');
+    const id = card.dataset.id;
+    if(getWishlist().includes(id)){
+      btn.classList.add('active');
+      btn.textContent = '♥';
+    }
+    btn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      toggleWishlistItem(id, btn);
+    });
+  });
+
+  wishlistBody.addEventListener('click', (e)=>{
+    const removeBtn = e.target.closest('.remove-wish');
+    if(!removeBtn) return;
+    const id = removeBtn.dataset.id;
+    const cardBtn = document.querySelector('.card[data-id="' + id + '"] .wishlist-btn');
+    toggleWishlistItem(id, cardBtn);
+  });
+
+  function openDrawer(){
+    wishlistDrawer.classList.add('open');
+    wishlistOverlay.classList.add('open');
+  }
+  function closeDrawer(){
+    wishlistDrawer.classList.remove('open');
+    wishlistOverlay.classList.remove('open');
+  }
+  wishlistFab.addEventListener('click', openDrawer);
+  wishlistClose.addEventListener('click', closeDrawer);
+  wishlistOverlay.addEventListener('click', closeDrawer);
+
+  renderWishlist();
 </script>
 
 </body>
-</html>
+  </html>
